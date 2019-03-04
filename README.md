@@ -6,9 +6,9 @@ The package defines 3 function classes: function (single argument), operator (du
 This python package defines a DSL for functional programming in the style of the array languages APL, J and K. 
 
 It defines three different function classes (two verbs and one adverb):
- - Single argument functions (aka monads) `fn(x)`
- - Dual argument functions (aka infix operators aka dyads) `op(x,y)`
- - Functors (aka functions on functions aka adverbs) for monads and dyads `ad(f)`
+ - Single argument functions (aka monads) `fn(lambda x: f(x))`
+ - Dual argument functions (aka infix operators aka dyads) `op(lambda x,y: g(x,y))`
+ - Functors (aka functions on functions aka adverbs) for monads and dyads `ad(lambda f: fn(g(f)))`
 
 
 Six overloaded operators which operate on the above classes:
