@@ -13,8 +13,8 @@ It defines three different function classes (two verbs and one adverb):
 
 Six overloaded operators which operate on the above classes:
  -  Data flow operators >> and << which specify the data flow from one verb to another `(f << g)(x) == f(g(x))` and `(f >> g)(x) == g(f(x))`
- - inline decorator which modify a function in place: `(f@g)(x) == (g(f))(x)` 
- - function power operator for repeated application of a function: `(f^3)(x) == f(f(f(x)))`
+ - Inline function decorator which modifies a function in place: `(f@g)(x) == (g(f))(x)` 
+ - Function power operator for repeated application of a function: `(f^3)(x) == f(f(f(x)))`
  - Syntactic sugar for the above operators: `(f << g | h)(x) == ((f<<g)@h)(x)`
  - `f & g == [f,g]`
 
