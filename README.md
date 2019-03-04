@@ -18,3 +18,7 @@ Six overloaded operators which operate on the above classes:
  - `f & g == [f,g]`
 
     `Lin1 = Add(2) >> Mul(3) | flatmap`
+
+The data flow operators show their full potential when they are combined with dyadic functions. e.g. `Div(x,y)==x/y` and the fork adverb
+`Avg = Sum >> Div << Len | fork`
+where the fork adverb is defined by `(F@fork)(x)==F(x,x)`
