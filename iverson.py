@@ -47,34 +47,39 @@ class ad:
     def __init__(self, function):
         self.function = function
         
-sqr=fn(lambda x:x**2)
-sqrt=fn(lambda x:x**0.5)
-p=fn(print)
-plus=op(lambda x,y:x+y)
-div=op(lambda x,y:x/y)
-gt=op(lambda x,y:x>y)
+Sqr=fn(lambda x:x**2)
+Sqrt=fn(lambda x:x**0.5)
+p = Print = fn(print)
+Add=op(lambda x,y:x+y)
+Div=op(lambda x,y:x/y)
+Gt=op(lambda x,y:x>y)
+
 fork=ad(lambda f: fn(lambda x,f=f:f.function(x,x)))
-map=ad(lambda f: fn(lambda x,f=f: [f.function(i) for i in x]))
-fold=ad(lambda f:f)
+flatmap=ad(lambda f: fn(lambda x,f=f: [f.function(i) for i in x]))
+deepmap=ad(lambda f:f)
+insert=ad(lambda f:f)
 table=ad(lambda f:f)
+
+
 Sum=fn(sum)
 Len=fn(len)
+Range=fn(range)
 
-(plus|fork)<<3 >>p
-Avg=(Sum>>div<<Len)|fork
-Avg(range(5)) >>p
-range(5) >>((Sum>>div<<Len)|fork) >>p
+(Add|fork)<<3 >>p
+Avg= Sum >>Div<< Len|fork
+Ranfge(5) >> Avg >>p
+Range(5) >>((Sum>>Div<<Len)|fork) >>p
 sum(range(5))/5. >>p
-[sqr(i) for i in range(5)] >>p
-range(5) >>(sqr|map) >>p
-range(5) >>((sqr>>plus<<sqrt)|fork|map) >>p
-range(5) >>(fn(lambda x: x**2+x**0.5)|map) >>p
+[Sqr(i) for i in range(5)] >>p
+range(5) >>(Sqr|flatmap) >>p
+range(5) >>((Sqr>>Add<<Sqrt)|fork|flatmap) >>p
+range(5) >>(fn(lambda x: x**2+x**0.5)|flatmap) >>p
 
-dist= (sqr>>plus<<sqr)>>sqrt
+dist= (Sqr>>Add<<Sqr)>>Sqrt
 dist(3,4) >>p
 
-5>>(plus>>sqrt)<<4 >>p
-print(2>>gt<<3)
-(sqr>>plus<<sqr)(3,4) >>sqrt>>p
-p<<sqr<<sqr<<sqrt<<4
-3>>sqr>>sqrt>>p
+5>>(Add>>Sqrt)<<4 >>p
+print(2>>Gt<<3)
+(Sqr>>Add<<Sqr)(3,4) >>Sqrt>>p
+p<<Sqr<<Sqr<<Sqrt<<4
+3>>Sqr>>Sqrt>>p
