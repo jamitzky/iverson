@@ -16,6 +16,10 @@ Six overloaded operators which operate on the above classes:
  - Function power operator for repeated application of a function: `(f^3)(x) == f(f(f(x)))`
  - Syntactic sugar for the above operators: `(f << g | h)(x) == ((f<<g)@h)(x)`
  - `([f,g]&h)(x,y) == if h(y): g(x) else: f(x)` which is the same as the ternary operator `h(y)?g(x):f(x)`
+
+
 The data flow operators show their full potential when they are combined with dyadic functions. e.g. `Div(x,y)==x/y` and the fork adverb
+
 `Avg = Sum >> Div << Len | fork`
+
 where the fork adverb is defined by `(F@fork)(x)==F(x,x)`
