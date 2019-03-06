@@ -33,3 +33,28 @@ where the fork adverb is defined by `(F@fork)(x)==F(x,x)`
 | `f<<g \|h ` | `lambda x: h(f<<g)(x)` |
 | `[f,g]&h` | `lambda x,y: if h(y): g(x) else: f(x)` |
 
+# We don't need no for loops
+
+By using the flatmap adverb loops can be completely avoided:
+
+`for i in arr:
+    do_something(i)`
+    
+can now be written as:
+
+`arr >> fn(do_something)@flatmap`
+
+# If considered dangerous
+
+No more, because if clauses are no longer necessary. Instead of
+
+`if cond(u):
+    do_if(u)
+ else:
+    do_else(u)`
+    
+ one can now write:
+ 
+ `[do_else,do_if]&cond|fork << u`
+ 
+ 
