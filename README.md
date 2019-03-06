@@ -23,3 +23,13 @@ The data flow operators show their full potential when they are combined with dy
 `Avg = Sum >> Div << Len | fork`
 
 where the fork adverb is defined by `(F@fork)(x)==F(x,x)`
+
+| function | lambda |
+|--|--|
+|  `f>>g`|`lambda x: g(f(x))`  |
+|`f<<g`|`lambda x: f(g(x))`|
+| `f@g` | `lambda x: (g(f))(x)` |
+| `f^3` | `lambda x: f(f(f(x)))` |
+| `f<<g \|h ` | `lambda x: h(f<<g)(x)` |
+| `[f,g]&h` | `lambda x,y: if h(y): g(x) else: f(x)` |
+
