@@ -33,7 +33,7 @@ where the fork adverb is defined by `(F@fork)(x)==F(x,x)`
 | `f<<g \|h ` | `lambda x: h(f<<g)(x)` |
 | `[f,g]&h` | `lambda x,y: if h(y): g(x) else: f(x)` |
 
-# We don't need no for loops
+# We don't need no stinkin for loops
 
 By using the flatmap adverb loops can be completely avoided:
 
