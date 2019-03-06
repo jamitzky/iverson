@@ -46,40 +46,36 @@ class op:
 class ad:
     def __init__(self, function):
         self.function = function
-        
-Sqr=fn(lambda x:x**2)
-Sqrt=fn(lambda x:x**0.5)
-p = Print = fn(print)
-Add=op(lambda x,y:x+y)
-Div=op(lambda x,y:x/y)
-Gt=op(lambda x,y:x>y)
-
+    
+# adverbs definition
 fork=ad(lambda f: fn(lambda x,f=f:f.function(x,x)))
 flatmap=ad(lambda f: fn(lambda x,f=f: [f.function(i) for i in x]))
 deepmap=ad(lambda f:f)
 insert=ad(lambda f:f)
 table=ad(lambda f:f)
+rmap=ad(lambda f:f)
+lmap=ad(lambda f:f)
+rlmap=ad(lambda f:f)
+rev=ad(lambda f: op(lambda x,y,f=f:f.function(y,x)))
 
+# standard operators        
+Add=op(lambda x,y:x+y)
+Sub=op(lambda x,y:x-y)
+Mul=op(lambda x,y:x*y)
+Div=op(lambda x,y:x/y)
+Pow=op(lambda x,y:x**y)
 
+Gt=op(lambda x,y:x>y)
+Lt=op(lambda x,y:x<y)
+Eq=op(lambda x,y:x==y)
+
+o={"+":Add,"-":Sub,"*":Mul,"/":Div,"**":Pow,">":Gt,"<":Lt,"==":Eq}
+
+# standard functions
 Sum=fn(sum)
 Len=fn(len)
+p = Print = fn(print)
 Range=fn(range)
+Sqr=fn(lambda x:x**2)
+Sqrt=fn(lambda x:x**0.5)
 
-(Add|fork)<<3 >>p
-Avg= Sum >>Div<< Len|fork
-Ranfge(5) >> Avg >>p
-Range(5) >>((Sum>>Div<<Len)|fork) >>p
-sum(range(5))/5. >>p
-[Sqr(i) for i in range(5)] >>p
-range(5) >>(Sqr|flatmap) >>p
-range(5) >>((Sqr>>Add<<Sqrt)|fork|flatmap) >>p
-range(5) >>(fn(lambda x: x**2+x**0.5)|flatmap) >>p
-
-dist= (Sqr>>Add<<Sqr)>>Sqrt
-dist(3,4) >>p
-
-5>>(Add>>Sqrt)<<4 >>p
-print(2>>Gt<<3)
-(Sqr>>Add<<Sqr)(3,4) >>Sqrt>>p
-p<<Sqr<<Sqr<<Sqrt<<4
-3>>Sqr>>Sqrt>>p
