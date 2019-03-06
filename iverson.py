@@ -52,10 +52,9 @@ fork=ad(lambda f: fn(lambda x,f=f:f.function(x,x)))
 flatmap=ad(lambda f: fn(lambda x,f=f: [f.function(i) for i in x]))
 deepmap=ad(lambda f:f)
 insert=ad(lambda f:f)
-table=ad(lambda f:f)
-rmap=ad(lambda f:f)
-lmap=ad(lambda f:f)
-rlmap=ad(lambda f:f)
+rmap=ad(lambda f: op(lambda x,y,f=f: [f.function(x,i) for i in y]))
+lmap=ad(lambda f: op(lambda x,y,f=f: [f.function(i,y) for i in x]))
+table=rlmap=ad(lambda f: op(lambda x,y,f=f: [f.function(i,j) for i in x for j in y]))
 rev=ad(lambda f: op(lambda x,y,f=f:f.function(y,x)))
 
 # standard operators        
