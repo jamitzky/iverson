@@ -59,3 +59,13 @@ one can now write:
     
 in a single line. 
  
+e.g.
+
+    def min(a, b)
+      if a < b:
+        a
+      else:
+        b
+
+can be written as `min = [id,id]&Gt`
+
