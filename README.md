@@ -67,5 +67,8 @@ e.g.
       else:
         b
 
-can be written as `min = [id,id]&Gt`
+can be written as `min = [Right,Left]&Lt` with `Right(x,y)==y` and `Left(x,y)==x`
+
+[f,g]&h = lambda x,y: if h(x,y): g(x,y) else: f(x,y)
+
 
