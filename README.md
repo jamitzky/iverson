@@ -44,7 +44,7 @@ can now be written as:
 
 `arr >> do_something@flatmap`
 
-# If considered dangerous
+# If considered harmful
 
 No more, because if clauses are no longer necessary. Instead of
 
