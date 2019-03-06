@@ -48,13 +48,14 @@ can now be written as:
 
 No more, because if clauses are no longer necessary. Instead of
 
-`if cond(u):
-    do_if(u)
- else:
-    do_else(u)`
+    if cond(u):
+        do_if(u)
+    else:
+        do_else(u)
     
  one can now write:
  
- `[do_else,do_if]&cond|fork << u`
- 
+     [do_else,do_if]&cond|fork << u
+    
+in a single line. 
  
