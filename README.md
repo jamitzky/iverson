@@ -31,7 +31,7 @@ where the fork adverb is defined by `(F@fork)(x)==F(x,x)`
 | `f@g` | `lambda x: (g(f))(x)` |
 | `f^3` | `lambda x: f(f(f(x)))` |
 | `f<<g \|h ` | `lambda x: h(f<<g)(x)` |
-| `[f,g]&h` | `lambda x,y: if h(y): g(x) else: f(x)` |
+| `f&[g,h]` | `lambda x,y: if f(y): h(x) else: g(x)` |
 
 # We don't need no stinkin for loops
 
@@ -55,7 +55,8 @@ No more, because if clauses are no longer necessary. Instead of
     
 one can now write:
  
-`u >> [do_else,do_if]&cond|fork`
+u >> cond&[do_else,do_if]|fork
+u >> cond and do_if or do_else
     
 in a single line. 
  
@@ -67,8 +68,9 @@ e.g.
       else:
         b
 
-can be written as `min = [Right,Left]&Lt` with `Right(x,y)==y` and `Left(x,y)==x`
+can be written as `min = Lt&[Y,X]` or `min = Lt and X or Y` with `Y(x,y)==Right(x,y)==y` and `X(x,y)==Left(x,y)==x`
 
-    [f,g]&h = lambda x,y: if h(x,y): g(x,y) else: f(x,y)
+    f and g or h = lambda x,y: if f(x,y): g(x,y) else: h(x,y)
+    f&(g,h) = lambda x,y: if f(x,y): h(x,y) else: g(x,y)
 
 
