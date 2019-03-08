@@ -40,9 +40,13 @@ class op:
         if type(other)==fn:
             return op(lambda x,y,self=self,other=other:self.function(x,other.function(y)))
         else:
-            return fn(lambda x,self=self,other=other:self.function(other,x))
-    def __call__(self, value1, value2):
-        return self.function(value1, value2)
+            return fn(lambda x,self=self,other=other:self.function(x,other))
+    def __call__(self, value1, value2=None):
+        #print(" op(x,y) and op(x)")
+        if value2==None:
+            return fn(lambda x,self=self: self.function(value1,x))
+        else:
+            return self.function(value1, value2)
 class ad:
     def __init__(self, function):
         self.function = function
