@@ -5,6 +5,9 @@ class fn:
         print("ror")
     def __or__(self, other):
         return other.function(self)
+    def __matmul__(self, other):
+        #print("self@ad")
+        return other.function(self)
     def __rrshift__(self, other):
         #print("fn other>>self")
         if type(other)==fn:
@@ -28,6 +31,9 @@ class op:
         print("ror")
     def __or__(self, other):
         #print("self|ad")
+        return other.function(self)
+    def __matmul__(self, other):
+        #print("self@ad")
         return other.function(self)
     def __rrshift__(self, other):
         #print("op other>>self")
@@ -60,6 +66,7 @@ rmap=ad(lambda f: op(lambda x,y,f=f: [f.function(x,i) for i in y]))
 lmap=ad(lambda f: op(lambda x,y,f=f: [f.function(i,y) for i in x]))
 table=rlmap=ad(lambda f: op(lambda x,y,f=f: [f.function(i,j) for i in x for j in y]))
 rev=ad(lambda f: op(lambda x,y,f=f:f.function(y,x)))
+splitjoin=ad(lambda f:f)
 
 # standard operators        
 Add=op(lambda x,y:x+y)
@@ -81,4 +88,9 @@ p = Print = fn(print)
 Range=fn(range)
 Sqr=fn(lambda x:x**2)
 Sqrt=fn(lambda x:x**0.5)
-
+#Floor
+#Ceil
+#Sign
+#Sin
+#Cos
+#Exp
