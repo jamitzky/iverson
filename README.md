@@ -55,8 +55,8 @@ No more, because if clauses are no longer necessary. Instead of
     
 one can now write:
  
-u >> cond&[do_else,do_if]|fork
-u >> cond and do_if or do_else
+    u >> cond&[do_else,do_if]|fork
+    u >> cond and do_if or do_else
     
 in a single line. 
  
