@@ -61,7 +61,16 @@ class ad:
 fork=ad(lambda f: fn(lambda x,f=f:f.function(x,x)))
 flatmap=ad(lambda f: fn(lambda x,f=f: [f.function(i) for i in x]))
 deepmap=ad(lambda f:f)
-insert=ad(lambda f:f)
+#insert=ad(lambda f:f)
+@ad
+def insert(f):
+    @fn
+    def insert_helper(x):
+        s0=f(x[0],x[1])
+        for xx in x[2:]:
+            s0=f(s0,xx)
+        return s0
+    return insert_helper
 rmap=ad(lambda f: op(lambda x,y,f=f: [f.function(x,i) for i in y]))
 lmap=ad(lambda f: op(lambda x,y,f=f: [f.function(i,y) for i in x]))
 table=rlmap=ad(lambda f: op(lambda x,y,f=f: [f.function(i,j) for i in x for j in y]))
