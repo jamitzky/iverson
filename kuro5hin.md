@@ -164,7 +164,8 @@ Examples:
        inc 8
      9
      
-#System Functions and Variables
+     
+# System Functions and Variables
 
 After running out of punctuation Arthur made system function. Every symbol beginning with an underscore is reserved for either a system variable or system function. System functions use infix, like their less readable cousins, but like user defined functions they cannot be overloaded with monadic and dyadic cases (in the next version of K this will be changed and users will be able to define infix functions and overload them with n-adic cases).
 
