@@ -73,7 +73,8 @@ def insert(f):
     return insert_helper
 rmap=ad(lambda f: op(lambda x,y,f=f: [f.function(x,i) for i in y]))
 lmap=ad(lambda f: op(lambda x,y,f=f: [f.function(i,y) for i in x]))
-table=rlmap=ad(lambda f: op(lambda x,y,f=f: [f.function(i,j) for i in x for j in y]))
+rlmap=ad(lambda f: op(lambda x,y,f=f: [f.function(x[i],y[i]) for i in range(len(x))])) # elementwise
+table=ad(lambda f: op(lambda x,y,f=f: [f.function(i,j) for i in x for j in y]))
 rev=ad(lambda f: op(lambda x,y,f=f:f.function(y,x)))
 splitjoin=ad(lambda f:f)
 
