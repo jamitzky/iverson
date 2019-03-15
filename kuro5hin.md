@@ -114,96 +114,99 @@ Examples:
       1 0 1 0 0 3 0 1 3 1?3 / find: the first indice of the right in left
     5
 
-Variables and Bindings
+# Variables and Bindings
 
 K is a dynamically, strongly typed language and, variables are not declared, but they come into existence when you assign a value to it. This can be done anywhere, even in the middle of an expression since there is no distinction between statements or expressions. If you try to read a value from a variable that has not yet been assigned to, you will raise an error. There are also no pointers. In true functional style, when you assign to a variable a deep copy of the value is made (K does this lazily, though). Assignment is done via the colon and it is read as "gets" or "is." As a special case, when an assignment is the last thing in an expression, null is returned (this helps prevent cluttering up the display log). You can force the return of a value from an assignment statement by using a case of the monadic colon.
 
 Examples:
 
-  a:"moo"       / a gets the string "moo"
-  b:!10         / b gets enumerate 10 (integer list from 0 to 9)
-  :c:b          / c gets the value of b, but changes to b do not effect c
-0 1 2 3 4 5 6 7 8 9
+      a:"moo"       / a gets the string "moo"
+      b:!10         / b gets enumerate 10 (integer list from 0 to 9)
+      :c:b          / c gets the value of b, but changes to b do not effect c
+    0 1 2 3 4 5 6 7 8 9
 
-  :h:(g*2),g:1+2 / h get g times 2 join g, where g gets 1 plus 2
-6 3
+       :h:(g*2),g:1+2 / h get g times 2 join g, where g gets 1 plus 2
+    6 3
 
-  g
-3
-User-defined Functions
+      g
+    3
+
+# User-defined Functions
 
 Braces ({}) are used to create functions; they are the equivalent of lambda in Lisp. Often they are used then the resulting function is assigned to a variable, but sometimes not. To assist in making the code compact, if a function requires three or fewer arguments, K will allow you to implicitly use x, y, and z as the arguments. If you need more than three arguments you must declare them all. All functions return the value of the last executed statement, even if that statement return null. To call a function you use brackets (just like a list index). If you do not supply an argument when calling a function, it will project.
 
 Examples:
 
-  pyth:{_sqrt(x*x)+y*y} / notice the two implicit arguments
-  pyth[30;40]
-50.0
+       pyth:{_sqrt(x*x)+y*y} / notice the two implicit arguments
+       pyth[30;40]
+     50.0
 
-  pyth[3 15;4 20]       / cute huh.
-5 25.0
+       pyth[3 15;4 20]       / cute huh.
+     5 25.0
 
-  dist:{[x1;y1;x2;y2] _sqrt((x2-x1)^2)+(y2-y1)^2}
-  dist[1;1;4;5]
-5.0
+       dist:{[x1;y1;x2;y2] _sqrt((x2-x1)^2)+(y2-y1)^2}
+       dist[1;1;4;5]
+     5.0
 
-  :d:dist[1;1]          / project or curry the first two arguments
-{[x1;y1;x2;y2] _sqrt((x2-x1)^2)+(y2-y1)^2}[1;1]
+       :d:dist[1;1]          / project or curry the first two arguments
+     {[x1;y1;x2;y2] _sqrt((x2-x1)^2)+(y2-y1)^2}[1;1]
 
-  d[7;9]
-10.0
+       d[7;9]
+     10.0
 
-  :e:dist[1;;4]         / project on first and third argument
-{[x1;y1;x2;y2] _sqrt((x2-x1)^2)+(y2-y1)^2}[1;;4]
+       :e:dist[1;;4]         / project on first and third argument
+     {[x1;y1;x2;y2] _sqrt((x2-x1)^2)+(y2-y1)^2}[1;;4]
 
-  e[2;6]
-5.0
+       e[2;6]
+     5.0
 
-  inc:1+
-  inc 8
-9
-System Functions and Variables
+       inc:1+
+       inc 8
+     9
+     
+#System Functions and Variables
 
 After running out of punctuation Arthur made system function. Every symbol beginning with an underscore is reserved for either a system variable or system function. System functions use infix, like their less readable cousins, but like user defined functions they cannot be overloaded with monadic and dyadic cases (in the next version of K this will be changed and users will be able to define infix functions and overload them with n-adic cases).
 
 Examples:
 
-  3_draw 5        / list of 3 random numbers from 0 to 4
-2 2 4
+       3_draw 5        / list of 3 random numbers from 0 to 4
+     2 2 4
 
-  2_draw 0        / list of 2 random real numbers from 0 to 1
-0.2232866 0.9504653
+       2_draw 0        / list of 2 random real numbers from 0 to 1
+     0.2232866 0.9504653
 
-  4_draw-4        / deal: list of 4 random nonrepeating numbers from 0 to 3
-2 0 1 3
+       4_draw-4        / deal: list of 4 random nonrepeating numbers from 0 to 3
+     2 0 1 3
 
-  4 13_draw-52    / deal a deck of cards into four piles
-(29 27 10 0 23 3 28 5 24 16 40 8 22
- 51 20 36 47 18 31 26 11 44 37 38 9 13
- 39 42 34 50 21 6 19 46 48 45 14 43 2
- 33 49 4 25 41 30 35 7 32 17 1 12 15)
+       4 13_draw-52    / deal a deck of cards into four piles
+     (29 27 10 0 23 3 28 5 24 16 40 8 22
+      51 20 36 47 18 31 26 11 44 37 38 9 13
+      39 42 34 50 21 6 19 46 48 45 14 43 2
+      33 49 4 25 41 30 35 7 32 17 1 12 15)
 
-  1 3 4 5 7 9_bin 4     / binary search through list returning index
-2
+      1 3 4 5 7 9_bin 4     / binary search through list returning index
+     2
 
-  1 3 4 5 7 9_binl 2 4 6 / binary seach for a list of numbers
-1 2 4
+       1 3 4 5 7 9_binl 2 4 6 / binary seach for a list of numbers
+     1 2 4
 
-  16_vs 543212    / vector from scalar: changes base to 16
-8 4 9 14 12
+       16_vs 543212    / vector from scalar: changes base to 16
+     8 4 9 14 12
 
-  5 3 2_vs 21     / also does variable change of base
-3 1 1
+       5 3 2_vs 21     / also does variable change of base
+     3 1 1
 
-  5 3 2_sv 3 1 1  / scalar from vector: the inverse
-21
+       5 3 2_sv 3 1 1  / scalar from vector: the inverse
+     21
 
-  _host`kuro5hin.org        / returns ip address as integer
--815566008
+       _host`kuro5hin.org        / returns ip address as integer
+     -815566008
 
-  256_vs _host`kuro5hin.org / presentation form
-207 99 115 72
-Adverbs
+       256_vs _host`kuro5hin.org / presentation form
+     207 99 115 72
+
+# Adverbs
 
 This is where K starts to set itself from apart from most of the common programming languages in use today. You rarely write loops in K (KDB is 100% loop-free), instead you use adverbs. An adverb modifies a function, returning another function, changing the ways it operates over its arguments and what it does with it's return values. Here is a small selection of adverbs' usages (there are other uses that are not covered here).
 
@@ -213,67 +216,73 @@ Scan (\) will apply the function down a list, collection all intermediate result
 Each (') will apply the function down lists of the same length (equal to the valence of the function).
 Each-right (/:) will hold the left argument of the function and apply the function down the list of right arguments.
 Examples:
-  +/1 2 3 4          / plus-over (sum): is similar to 1+2+3+4
-10
+       +/1 2 3 4          / plus-over (sum): is similar to 1+2+3+4
+     10
 
-  +\1 2 3 4          / plus-scan: returns the intermediate values of +/
-1 3 6 10
+       +\1 2 3 4          / plus-scan: returns the intermediate values of +/
+     1 3 6 10
 
-  |/5 3 7 4 2        / max-over: compares all items like 5|3|7|4|2
-7
+       |/5 3 7 4 2        / max-over: compares all items like 5|3|7|4|2
+     7
 
-  ,/(1 2;(3 4;5);6)  / join-over: (1 2),(3 4;5),6
-(1;2;3 4;5;6)
+       ,/(1 2;(3 4;5);6)  / join-over: (1 2),(3 4;5),6
+    (1;2;3 4;5;6)
 
-  ,//(1 2;(3 4;5);6) / flatten: explained below
-1 2 3 4 5 6
+      ,//(1 2;(3 4;5);6) / flatten: explained below
+    1 2 3 4 5 6
 
-  3 4_draw'-3 -4     / draw-each: (3_draw-3),(4_draw-4)
-(1 2 0
- 2 0 1 3)
+      3 4_draw'-3 -4     / draw-each: (3_draw-3),(4_draw-4)
+    (1 2 0
+     2 0 1 3)
 
-  2_draw/:10 100     / draw-right-each: (2_draw 10),(2_draw 100)
-(7 7
- 45 91)
+      2_draw/:10 100     / draw-right-each: (2_draw 10),(2_draw 100)
+    (7 7
+     45 91)
+     
 Let me break down flatten for you. Join is a function that takes two values. Over modifies join and the result is a function that now takes one argument (a list) and joins all the elements of that list. Looking at the above example, when join was given a nested list, it simple stitched all the elements into a single list, removing one level of depth. However, we would like to remove all level of depth. We want join-over again to remove another level of depth, and join-over again to remove another level of depth, until the list is completely flat. This is what converge will do for us. The second application of over takes this monadic function, join-over, and continually applies it until the result no longer changes. If we didn't want to flatten the topmost list, but instead we had a list of lists to flatten, we would only want to apply flatten to each element of the top-level list. That is what flatten-each (,//') would do. If we wanted to keep the top two levels of depth we would write flatten-each-each (,//'') and this is where things start too look like line noise.
-Conditionals
+
+# Conditionals
 
 Although rarely used, there are a few conditionals; most often used is the colon. It is similar to cond in Lisp: it takes pairs of arguments and an optional final argument. The first argument of each pair is tested for truth (0 is false, all other integers are true, anything besides an integer is an error). If it is true then the result of evaluating the second of the pair is returned. If it is false then the next pair is tested. If all the pairs have been exhausted, then the final argument is evaluated and the result returned. If there is no final argument and all the conditions are false, then null is returned.
 
 Examples:
 
-  :[0;"true";"false"]
-"false"
+      :[0;"true";"false"]
+    "false"
 
-  s:{:[x>0;"+"; x<0;"-"; "0"]} / returns the sign of x or 0
-  s 4
-"+"
+      s:{:[x>0;"+"; x<0;"-"; "0"]} / returns the sign of x or 0
+      s 4
+    "+"
 
-  s -3
-"-3"
-Naive Primality Test
+      s -3
+    "-3"
+    
+# Naive Primality Test
 
 As in Nobody Expects the Spanish Inquisition, I will conclude the basics with a naive primality predicate and try to explain it.
 
-  isprime:{&/x!/:2_!x}  / min over x mod right-each 2 drop enumerate x
-  isprime 14
-0
+      isprime:{&/x!/:2_!x}  / min over x mod right-each 2 drop enumerate x
+      isprime 14
+    0
 
-  isprime 7
-1
+      isprime 7
+    1
+    
 Analyzing from right to left. We create a list of all integers from 0 to x (exclusive), then we remove the first two elements (2_), so we are left with a list from 2 to x (exclusive). Next we determine the residue of x and each of the numers in the list. Finally, we calculate the minimum of the residues. If the number is prime, then the lowest residue will be 1 and be considered true. If the number was composite there will be a 0 residue for some value.
-  !14
-0 1 2 3 4 5 6 7 8 9 10 11 12 13
 
-  2_!14
-2 3 4 5 6 7 8 9 10 11 12 13
+      !14
+    0 1 2 3 4 5 6 7 8 9 10 11 12 13
 
-  14!/:2_!14
-0 2 2 4 2 0 6 5 4 3 2 1
+      2_!14
+    2 3 4 5 6 7 8 9 10 11 12 13
 
-  &/14!/:2_!14
-0
-The K-tree
+      14!/:2_!14
+    0 2 2 4 2 0 6 5 4 3 2 1
+
+      &/14!/:2_!14
+    0
+    
+# The K-tree
 
 Here is a quick, small look at one of the unique elements of K, called the K-tree. It falls nicely into the K philosophy of keeping things simple and powerful. The K-tree can be used for modularization of programs, as a scoping mechanism, for GUI design, and as a rudimentary object system.
 
@@ -283,36 +292,37 @@ A branch is really just a dictionary. If I were to assign a dictionary that cont
 
 Whenever you are in the K environment you are always running in a branch of the K-tree. When the K interpreter starts it places you in the .k branch. You can move around the tree with the directory (\d) command. For example \d .tw.ig would create the new branch tw then create a subbranch ig. You can inspect all the variables in a branch with the list variables (\v) command. Often a script will begin with a change directory command and then define all of its variables in that (and maybe a few more) branches. This effectively uses the K-tree as a module system.
 
-  \d .test          / create a new directory off the root
-  \d ement          / create a sub-branch
-  \d                / show the current directory
-.test.ement
+      \d .test          / create a new directory off the root
+      \d ement          / create a sub-branch
+      \d                / show the current directory
+    .test.ement
 
-  new:`small        / put some values in the directory
-  old:`big
-  \v                / list the contents o
-new old
+      new:`small        / put some values in the directory
+      old:`big
+      \v                / list the contents o
+    new old
 
-  \d ^              / back up one directory in the tree
-  \d
-.test
+      \d ^              / back up one directory in the tree
+      \d
+    .test
 
-  \v
-ement
+      \v
+    ement
 
-  ement             / inspect the value of ement
-.((`new;`small;)
-  (`old;`big;))
+      ement             / inspect the value of ement
+    .((`new;`small;)
+      (`old;`big;))
 
-  .test.ement.new   / fully-qualified
-`small
+      .test.ement.new   / fully-qualified
+    `small
 
-  ement.old         / partially qualified
-`big
+      ement.old         / partially qualified
+    `big
 
-  ement`old         / index like an array
-`big
-Other Unique Elements of K
+      ement`old         / index like an array
+    `big
+
+# Other Unique Elements of K
 
 The K philosophy itself has some unique insights on how to treat data and the appropriate way to organize data for efficient processing, however within the language there are some features that you will not find in any other language:
 
@@ -328,29 +338,29 @@ In a time when programming languages are lacking in originality and are not brin
 
 Here are some closing simple segments of K that are informative on how the K way of approaching a problem may be different:
 
-  cut:{1_'(&x;=*x)_ x:" ",x}
-  cut "Scoop ate my spaces"
-("Scoop"
- "ate"
- "my"
- "spaces")
+      cut:{1_'(&x;=*x)_ x:" ",x}
+      cut "Scoop ate my spaces"
+    ("Scoop"
+     "ate"
+     "my"
+     "spaces")
 
-  fibonacci:{x(|+\)\1 1}
-  fibonacci 5
-(1 1
- 2 1
- 3 2
- 5 3
- 8 5
- 13 8)
+      fibonacci:{x(|+\)\1 1}
+      fibonacci 5
+    (1 1
+     2 1
+     3 2
+     5 3
+     8 5
+     13 8)
 
-  first:*:
-  euclid:{first(|{y!x}\)\x,y} / Euclid's Algorithm
-  euclid[24;40]
-(24 40
- 16 24
- 8 16
- 0 8)
+      first:*:
+      euclid:{first(|{y!x}\)\x,y} / Euclid's Algorithm
+      euclid[24;40]
+    (24 40
+     16 24
+     8 16
+     0 8)
 
 
 
