@@ -159,6 +159,9 @@ _log=fn(math.log)
 _sin=fn(math.sin)
 _cos=fn(math.cos)
 _exp=fn(math.exp)
+
+_split=op(lambda x,y: y.split(x))
+_join=op(lambda x,y: x.join(y))
 #Floor
 #Ceil
 #Sign
