@@ -158,6 +158,7 @@ import math
 _log=fn(math.log)
 _sin=fn(math.sin)
 _cos=fn(math.cos)
+_exp=fn(math.exp)
 #Floor
 #Ceil
 #Sign
