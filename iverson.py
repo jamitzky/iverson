@@ -156,7 +156,8 @@ _sqrt=Sqrt
 _int=fn(int)
 import math
 _log=fn(math.log)
-
+_sin=fn(math.sin)
+_cos=fn(math.cos)
 #Floor
 #Ceil
 #Sign
