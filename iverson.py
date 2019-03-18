@@ -1,3 +1,7 @@
+#
+# (c) Ferdinand Jamitzky 2019
+#
+
 class fn:
     def __init__(self, function):
         self.function = function
