@@ -188,8 +188,12 @@ _exp=fn(math.exp)
 #Sin
 #Cos
 #Exp
+_not=fn("not x")
+_where=op(lambda x,y: [x[i] for i in range(len(x)) if y[i]])
 
 # compute all primes smaller than N
 # [i for i in range(N) if not i>> (_in<< _mul@table@fork << _range)@fork]
 # pure python
 # [k for k in range(100) if not (k in [i*j for i in range(k) for j in range(k)])]
+# pure point-free
+# N >>(_range >> _where <<_not@flatmap<< (_in<< _mul@table@fork<<_range)@fork@flatmap <<_range)@fork
