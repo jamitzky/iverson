@@ -4,7 +4,10 @@
 
 class fn:
     def __init__(self, function):
-        self.function = function
+        if type(function)==str:
+            self.function=eval("lambda x:"+function)
+        else:
+            self.function = function
     def __ror__(self, other):
         print("ror")
     def __or__(self, other):
@@ -46,7 +49,12 @@ class fn:
         return self.function(value)
 class op:
     def __init__(self, function):
-        self.function = function
+        #print(function)
+        if type(function)==str:
+            #print("string")
+            self.function=eval("lambda x,y:"+function)
+        else:
+            self.function = function
     def __ror__(self, other):
         print("ror")
     def __or__(self, other):
@@ -124,24 +132,34 @@ def converge(f):
     return converge_helper
 
 # standard operators        
-Add=op(lambda x,y:x+y)
+Add=op("x+y")
 _add=Add
-Sub=op(lambda x,y:x-y)
+Sub=op("x-y")
 _sub=Sub
-Mul=op(lambda x,y:x*y)
+Mul=op("x*y")
 _mul=Mul
-Div=op(lambda x,y:x/y)
+Div=op("x/y")
 _div=Div
-Pow=op(lambda x,y:x**y)
+Pow=op("x**y")
 _pow=Pow
 
-Gt=op(lambda x,y:x>y)
+Gt=op("x>y")
 _gt=Gt
-Lt=op(lambda x,y:x<y)
+Lt=op("x<y")
 _lt=Lt
 
-Eq=op(lambda x,y:x==y)
+Eq=op("x==y")
 _eq=Eq
+_split=op("y.split(x)")
+_join=op("x.join(y)")
+#Get=op(lambda n,x:x[n])
+Get=op("y[x]")
+_get=Get
+_in=op("x in y")
+#Append=op(lambda val,x:x+[val])
+Append=op("y+[x]")
+_append=Append
+append=ad(lambda f:f >>_append|fork)
 
 o={"+":Add,"-":Sub,"*":Mul,"/":Div,"**":Pow,">":Gt,"<":Lt,"==":Eq}
 
@@ -153,9 +171,9 @@ _len=Len
 p = Print = fn(print)
 Range=fn(range)
 _range=Range
-Sqr=fn(lambda x:x**2)
+Sqr=fn("x**2")
 _sqr=Sqr
-Sqrt=fn(lambda x:x**0.5)
+Sqrt=fn("x**0.5")
 _sqrt=Sqrt
 _int=fn(int)
 import math
@@ -164,16 +182,14 @@ _sin=fn(math.sin)
 _cos=fn(math.cos)
 _exp=fn(math.exp)
 
-_split=op(lambda x,y: y.split(x))
-_join=op(lambda x,y: x.join(y))
 #Floor
 #Ceil
 #Sign
 #Sin
 #Cos
 #Exp
-Get=op(lambda n,x:x[n])
-_get=Get
-Append=op(lambda val,x:x+[val])
-_append=Append
-append=ad(lambda f:f >>_append|fork)
+
+# compute all primes smaller than N
+# [i for i in range(N) if not i>> (_in<< _mul@table@fork << _range)@fork]
+# pure python
+# [k for k in range(100) if not (k in [i*j for i in range(k) for j in range(k)])]
