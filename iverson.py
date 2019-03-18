@@ -94,7 +94,6 @@ rlmap=ad(lambda f: op(lambda x,y,f=f: [f.function(x[i],y[i]) for i in range(len(
 table=ad(lambda f: op(lambda x,y,f=f: [f.function(i,j) for i in x for j in y]))
 rev=ad(lambda f: op(lambda x,y,f=f:f.function(y,x)))
 
-splitjoin=ad(lambda f:f)
 @ad
 def cum(f):
     "cumulative insert"
@@ -136,6 +135,7 @@ Gt=op(lambda x,y:x>y)
 _gt=Gt
 Lt=op(lambda x,y:x<y)
 _lt=Lt
+
 Eq=op(lambda x,y:x==y)
 _eq=Eq
 
