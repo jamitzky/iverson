@@ -47,6 +47,18 @@ class fn:
             return self.function(other)
     def __call__(self, value):
         return self.function(value)
+    def __add__(self,other):
+        "f+g (x) = f(x)+g(x)"
+        return fn(lambda x:self(x)+other(x))
+    def __sub__(self,other):
+        return fn(lambda x:self(x)-other(x))
+    def __mul__(self,other):
+        return fn(lambda x:self(x)*other(x))
+    def __div__(self,other):
+        return fn(lambda x:self(x)/other(x))
+    def __pow__(self,other):
+        return fn(lambda x:self(x)**other(x))
+
 class op:
     def __init__(self, function):
         #print(function)
@@ -84,7 +96,75 @@ class op:
 class ad:
     def __init__(self, function):
         self.function = function
-    
+
+
+# underscore definition
+import operator
+class uscore:
+    def __init__(self):
+        pass
+    def __add__(self,other):
+        if type(other)==uscore:
+            return op(operator.__add__)
+        else:
+            return fn(lambda x,other=other:operator.__add__(x,other))
+    def __sub__(self,other):
+        if type(other)==uscore:
+            return op(operator.__sub__)
+        else:
+            return fn(lambda x,other=other:operator.__sub__(x,other))
+    def __mul__(self,other):
+        if type(other)==uscore:
+            return op(operator.__mul__)
+        else:
+            return fn(lambda x,other=other:operator.__mul__(x,other))
+    def __div__(self,other):
+        if type(other)==uscore:
+            return op(operator.__div__)
+        else:
+            return fn(lambda x,other=other:operator.__div__(x,other))
+    def __pow__(self,other):
+        if type(other)==uscore:
+            return op(operator.__pow__)
+        else:
+            return fn(lambda x,other=other:operator.__pow__(x,other))
+    def __gt__(self,other):
+        if type(other)==uscore:
+            return op(operator.__gt__)
+        else:
+            return fn(lambda x,other=other:operator.__gt__(x,other))
+    def __lt__(self,other):
+        if type(other)==uscore:
+            return op(operator.__lt__)
+        else:
+            return fn(lambda x,other=other:operator.__lt__(x,other))
+    def __eq__(self,other):
+        if type(other)==uscore:
+            return op(operator.__eq__)
+        else:
+            return fn(lambda x,other=other:operator.__eq__(x,other))
+    def __in__(self,other):
+        "fixme"
+        if type(other)==uscore:
+            return op(operator.__in__)
+        else:
+            return fn(lambda x,other=other:operator.__in__(x,other))
+    def __getitem__(self,other):
+        if type(other)==uscore:
+            return op(operator.__getitem__)
+        else:
+            return fn(lambda x,other=other:operator.__getitem__(x,other))
+    def __getattr__(self,other):
+        "fixme"
+        if type(other)==uscore:
+            pass
+        else:
+            return fn(lambda x,other=other:x.__getattr__(other))
+
+
+_=uscore()
+
+
 # adverbs definition
 fork=ad(lambda f: fn(lambda x,f=f:f.function(x,x)))
 flatmap=ad(lambda f: fn(lambda x,f=f: [f.function(i) for i in x]))
@@ -131,69 +211,47 @@ def converge(f):
         return out
     return converge_helper
 
+append_=op("y+[x]")
+append=ad(lambda f:f >> append_|fork)
+
 # standard operators        
-Add=op("x+y")
-_add=Add
-Sub=op("x-y")
-_sub=Sub
-Mul=op("x*y")
-_mul=Mul
-Div=op("x/y")
-_div=Div
-Pow=op("x**y")
-_pow=Pow
+split_=op("y.split(x)")
+join_=op("x.join(y)")
+in_=op("x in y")
 
-Gt=op("x>y")
-_gt=Gt
-Lt=op("x<y")
-_lt=Lt
-
-Eq=op("x==y")
-_eq=Eq
-_split=op("y.split(x)")
-_join=op("x.join(y)")
-#Get=op(lambda n,x:x[n])
-Get=op("y[x]")
-_get=Get
-_in=op("x in y")
-#Append=op(lambda val,x:x+[val])
-Append=op("y+[x]")
-_append=Append
-append=ad(lambda f:f >>_append|fork)
-
-o={"+":Add,"-":Sub,"*":Mul,"/":Div,"**":Pow,">":Gt,"<":Lt,"==":Eq}
 
 # standard functions
-Sum=fn(sum)
-_sum=Sum
-Len=fn(len)
-_len=Len
+import random
+runif_=fn(lambda n:[random.random() for nn in range(n)])
+sum_=fn(sum)
+len_=fn(len)
 p = Print = fn(print)
-Range=fn(range)
-_range=Range
-Sqr=fn("x**2")
-_sqr=Sqr
-Sqrt=fn("x**0.5")
-_sqrt=Sqrt
-_int=fn(int)
+range_=fn(range)
+int_=fn(int)
 import math
-_log=fn(math.log)
-_sin=fn(math.sin)
-_cos=fn(math.cos)
-_exp=fn(math.exp)
+log_=fn(math.log)
+sin_=fn(math.sin)
+cos_=fn(math.cos)
+exp_=fn(math.exp)
 
 #Floor
 #Ceil
 #Sign
-#Sin
-#Cos
-#Exp
-_not=fn("not x")
-_where=op(lambda x,y: [x[i] for i in range(len(x)) if y[i]])
+not_=fn("not x")
+@op
+def _if_(x,y):
+    return [x[i] for i in range(len(x)) if y[i]]
+@op
+def _unless_(x,y):
+    return [x[i] for i in range(len(x)) if not y[i]]
+
 
 # compute all primes smaller than N
-# [i for i in range(N) if not i>> (_in<< _mul@table@fork << _range)@fork]
+# [i for i in range(N) if not i>> (_in_<< (_*_)@table@fork << range_)@fork]
 # pure python
 # [k for k in range(100) if not (k in [i*j for i in range(k) for j in range(k)])]
 # pure point-free
-# N >>(_range >> _where <<_not@flatmap<< (_in<< _mul@table@fork<<_range)@fork@flatmap <<_range)@fork
+# N >>(range_ >> _unless_ << (_in<< (_*_)@table@fork<<_range)@fork@flatmap <<_range)@fork
+# Fibonacci
+# Fib=(_[-1] + _[-2])@append
+# [1,1] >> Fib@N
