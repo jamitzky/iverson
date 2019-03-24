@@ -29,9 +29,7 @@ where the fork adverb is defined by `(F@fork)(x)==F(x,x)`
 |  `f>>g`|`lambda x: g(f(x))`  |
 |`f<<g`|`lambda x: f(g(x))`|
 | `f@g` | `lambda x: (g(f))(x)` |
-| `f^3` | `lambda x: f(f(f(x)))` |
-| `f<<g \|h ` | `lambda x: h(f<<g)(x)` |
-| `f&[g,h]` | `lambda x,y: if f(y): h(x) else: g(x)` |
+| `f@3` | `lambda x: f(f(f(x)))` |
 
 # We don't need no stinkin for loops
 
