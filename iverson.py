@@ -170,12 +170,7 @@ class uscore:
         else:
             return fn(lambda x,other=other:operator.__getitem__(x,other))
     def __getattr__(self,other):
-        "fixme"
-        if type(other)==uscore:
-            pass
-        else:
-            return fn(lambda x,other=other:getattr(x,other)) >> op("x(y)")
-
+        return fn(lambda x,other=other:getattr(x,other)) >> op("x(y)")
 
 _=uscore()
 
