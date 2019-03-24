@@ -49,15 +49,30 @@ class fn:
         return self.function(value)
     def __add__(self,other):
         "f+g (x) = f(x)+g(x)"
-        return fn(lambda x:self(x)+other(x))
+        if type(other)==fn:
+            return fn(lambda x:self(x)+other(x))
+        else:
+            return fn(lambda x:self(x)+other)
     def __sub__(self,other):
-        return fn(lambda x:self(x)-other(x))
+        if type(other)==fn:
+            return fn(lambda x:self(x)-other(x))
+        else:
+            return fn(lambda x:self(x)-other)
     def __mul__(self,other):
-        return fn(lambda x:self(x)*other(x))
-    def __div__(self,other):
-        return fn(lambda x:self(x)/other(x))
+        if type(other)==fn:
+            return fn(lambda x:self(x)*other(x))
+        else:
+            return fn(lambda x:self(x)*other)
+    def __truediv__(self,other):
+        if type(other)==fn:
+            return fn(lambda x:self(x)/other(x))
+        else:
+            return fn(lambda x:self(x)/other)
     def __pow__(self,other):
-        return fn(lambda x:self(x)**other(x))
+        if type(other)==fn:
+            return fn(lambda x:self(x)**other(x))
+        else:
+            return fn(lambda x:self(x)**other)
 
 class op:
     def __init__(self, function):
@@ -118,11 +133,11 @@ class uscore:
             return op(operator.__mul__)
         else:
             return fn(lambda x,other=other:operator.__mul__(x,other))
-    def __div__(self,other):
+    def __truediv__(self,other):
         if type(other)==uscore:
-            return op(operator.__div__)
+            return op(operator.__truediv__)
         else:
-            return fn(lambda x,other=other:operator.__div__(x,other))
+            return fn(lambda x,other=other:operator.__truediv__(x,other))
     def __pow__(self,other):
         if type(other)==uscore:
             return op(operator.__pow__)
@@ -159,7 +174,7 @@ class uscore:
         if type(other)==uscore:
             pass
         else:
-            return fn(lambda x,other=other:x.__getattr__(other))
+            return fn(lambda x,other=other:getattr(x,other)) >> op("x(y)")
 
 
 _=uscore()
@@ -215,8 +230,6 @@ append_=op("y+[x]")
 append=ad(lambda f:f >> append_|fork)
 
 # standard operators        
-split_=op("y.split(x)")
-join_=op("x.join(y)")
 in_=op("x in y")
 
 
@@ -233,6 +246,16 @@ log_=fn(math.log)
 sin_=fn(math.sin)
 cos_=fn(math.cos)
 exp_=fn(math.exp)
+sorted_=fn(sorted)
+
+
+abs_=fn(abs)
+all_=fn(all)
+any_=fn(any)
+str_=fn(str)
+filter_=fn(filter)
+float_=fn(float)
+repr_=fn(repr)
 
 #Floor
 #Ceil
