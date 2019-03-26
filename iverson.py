@@ -39,6 +39,13 @@ class fn:
             return op(lambda x,y,self=self,other=other: self.function(other.function(x,y)))
         else:
             return self.function(other)
+    def __rshift__(self,other):
+        if type(other)==fn:
+            return fn(lambda x,self=self,other=other: other.function(self.function(x)))
+        elif type(other)==op:
+            return op(lambda x,y,self=self,other=other: other.function(self.function(x),y))
+        else:
+            return self.function(other)
     def __lshift__(self, other):
         #print("fn self<<other")
         if type(other)==fn:
@@ -123,6 +130,8 @@ class uscore:
             return op(operator.__add__)
         else:
             return fn(lambda x,other=other:operator.__add__(x,other))
+    def __radd__(self,other):
+        return fn(lambda x,other=other:operator.__add__(other,x))
     def __sub__(self,other):
         if type(other)==uscore:
             return op(operator.__sub__)
@@ -170,14 +179,16 @@ class uscore:
         else:
             return fn(lambda x,other=other:operator.__getitem__(x,other))
     def __getattr__(self,other):
-        return fn(lambda x,other=other:getattr(x,other)) >> op("x(y)")
+        #out=getattr(x,other)
+        #if type(out) is type(any):
+        return op(lambda x,y,other=other:getattr(y,other)(x))
 
 _=uscore()
 
 
 # adverbs definition
-fork=ad(lambda f: fn(lambda x,f=f:f.function(x,x)))
-flatmap=ad(lambda f: fn(lambda x,f=f: [f.function(i) for i in x]))
+ψ=φ=fork=ad(lambda f: fn(lambda x,f=f:f.function(x,x)))
+µ=flatmap=ad(lambda f: fn(lambda x,f=f: [f.function(i) for i in x]))
 deepmap=ad(lambda f:f)
 #insert=ad(lambda f:f)
 @ad
@@ -190,10 +201,10 @@ def ins(f):
             s0=f(s0,xx)
         return s0
     return insert_helper
-rmap=ad(lambda f: op(lambda x,y,f=f: [f.function(x,i) for i in y]))
-lmap=ad(lambda f: op(lambda x,y,f=f: [f.function(i,y) for i in x]))
-rlmap=ad(lambda f: op(lambda x,y,f=f: [f.function(x[i],y[i]) for i in range(len(x))])) # elementwise
-table=ad(lambda f: op(lambda x,y,f=f: [f.function(i,j) for i in x for j in y]))
+rµ=rmap=ad(lambda f: op(lambda x,y,f=f: [f.function(x,i) for i in y]))
+lµ=lmap=ad(lambda f: op(lambda x,y,f=f: [f.function(i,y) for i in x]))
+rlµ=rlmap=ad(lambda f: op(lambda x,y,f=f: [f.function(x[i],y[i]) for i in range(len(x))])) # elementwise
+τ=table=ad(lambda f: op(lambda x,y,f=f: [f.function(i,j) for i in x for j in y]))
 rev=ad(lambda f: op(lambda x,y,f=f:f.function(y,x)))
 
 @ad
@@ -222,19 +233,21 @@ def converge(f):
     return converge_helper
 
 append_=op("y+[x]")
-append=ad(lambda f:f >> append_|fork)
+α=append=ad(lambda f:f >> append_|fork)
+
 
 # standard operators        
-in_=op("x in y")
+_in_=op("x in y")
 
 
 # standard functions
 import random
-runif_=fn(lambda n:[random.random() for nn in range(n)])
-sum_=fn(sum)
-len_=fn(len)
+χ=runif_=fn(lambda n:[random.random() for nn in range(n)])
+Σ=sum_=fn(sum)
+Λ=len_=fn(len)
 p = Print = fn(print)
-range_=fn(range)
+Ξ=range_=fn(range)
+_range_=op("range(x,y)")
 int_=fn(int)
 import math
 log_=fn(math.log)
@@ -265,11 +278,14 @@ def _unless_(x,y):
 
 
 # compute all primes smaller than N
-# [i for i in range(N) if not i>> (_in_<< (_*_)@table@fork << range_)@fork]
+# [i for i in Ξ(N) if not i>> (_in_<< (_*_)@τ@φ << Ξ)@φ]
 # pure python
 # [k for k in range(100) if not (k in [i*j for i in range(k) for j in range(k)])]
 # pure point-free
-# N >>(range_ >> _unless_ << (_in<< (_*_)@table@fork<<_range)@fork@flatmap <<_range)@fork
+# N >>(Ξ >> _unless_ << (_in<< (_*_)@τ@φ <<Ξ )@φ@µ <<Ξ )@µ
 # Fibonacci
-# Fib=(_[-1] + _[-2])@append
+# Fib=(_[-1] + _[-2])@α
 # [1,1] >> Fib@N
+# compute pi
+# 1000000 >> ((χ>>op("(x**2+y**2)**0.5<1")@rlµ<<χ)@ψ >>  Σ*4 >> _/_)@ψ
+# 1000000 >> ((χ>>(_**2>>_+_<<_**2>>_**0.5>>(_<1))@rlµ<<χ)@ψ >> Σ*4 >> _/_)@ψ
