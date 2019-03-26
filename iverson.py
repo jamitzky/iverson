@@ -190,7 +190,7 @@ _=uscore()
 ψ=φ=fork=ad(lambda f: fn(lambda x,f=f:f.function(x,x)))
 µ=flatmap=ad(lambda f: fn(lambda x,f=f: [f.function(i) for i in x]))
 deepmap=ad(lambda f:f)
-#insert=ad(lambda f:f)
+
 @ad
 def ins(f):
     "insert operator into list aka reduce function"
@@ -201,6 +201,7 @@ def ins(f):
             s0=f(s0,xx)
         return s0
     return insert_helper
+ω=insert=ins
 rµ=rmap=ad(lambda f: op(lambda x,y,f=f: [f.function(x,i) for i in y]))
 lµ=lmap=ad(lambda f: op(lambda x,y,f=f: [f.function(i,y) for i in x]))
 rlµ=rlmap=ad(lambda f: op(lambda x,y,f=f: [f.function(x[i],y[i]) for i in range(len(x))])) # elementwise
@@ -237,7 +238,7 @@ append_=op("y+[x]")
 
 
 # standard operators        
-_in_=op("x in y")
+ε=_in_=op("x in y")
 
 
 # standard functions
@@ -278,11 +279,12 @@ def _unless_(x,y):
 
 
 # compute all primes smaller than N
-# [i for i in Ξ(N) if not i>> (_in_<< (_*_)@τ@φ << Ξ)@φ]
+# [i for i in Ξ(N) if not i>>(ε<<(_*_)@τ@φ<<Ξ)@φ]
+# [i for i in N>>Ξ if not i in i>>((_*_)@τ@φ<<Ξ|φ)]
 # pure python
 # [k for k in range(100) if not (k in [i*j for i in range(k) for j in range(k)])]
 # pure point-free
-# N >>(Ξ >> _unless_ << (_in<< (_*_)@τ@φ <<Ξ )@φ@µ <<Ξ )@µ
+# N >>(Ξ >>_unless_<< (ε<< (_*_)@τ@φ <<Ξ )@φ@µ <<Ξ )@µ
 # Fibonacci
 # Fib=(_[-1] + _[-2])@α
 # [1,1] >> Fib@N
