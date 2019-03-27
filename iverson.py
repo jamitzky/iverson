@@ -3,6 +3,7 @@
 #
 
 class fn:
+    __array_priority__=2
     def __init__(self, function):
         if type(function)==str:
             self.function=eval("lambda x:"+function)
@@ -38,21 +39,22 @@ class fn:
         elif type(other)==op:
             return op(lambda x,y,self=self,other=other: self.function(other.function(x,y)))
         else:
-            return self.function(other)
+            return self(other)
     def __rshift__(self,other):
         if type(other)==fn:
             return fn(lambda x,self=self,other=other: other.function(self.function(x)))
         elif type(other)==op:
             return op(lambda x,y,self=self,other=other: other.function(self.function(x),y))
         else:
-            return self.function(other)
+            return self(other)
     def __lshift__(self, other):
         #print("fn self<<other")
         if type(other)==fn:
             return fn(lambda x,self=self,other=other: self.function(other.function(x)))
         else:
-            return self.function(other)
+            return self(other)
     def __call__(self, value):
+        #print(value)
         return self.function(value)
     def __add__(self,other):
         "f+g (x) = f(x)+g(x)"
@@ -82,6 +84,7 @@ class fn:
             return fn(lambda x:self(x)**other)
 
 class op:
+    __array_priority__=2    
     def __init__(self, function):
         #print(function)
         if type(function)==str:
@@ -116,6 +119,7 @@ class op:
         else:
             return self.function(value1, value2)
 class ad:
+    __array_priority__=2    
     def __init__(self, function):
         self.function = function
     def __call__(self,verb):
@@ -124,6 +128,7 @@ class ad:
 # underscore definition
 import operator
 class uscore:
+    __array_priority__=2
     def __init__(self):
         pass
     def __add__(self,other):
