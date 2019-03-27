@@ -118,7 +118,8 @@ class op:
 class ad:
     def __init__(self, function):
         self.function = function
-
+    def __call__(self,verb):
+        return self.function(verb)
 
 # underscore definition
 import operator
@@ -182,6 +183,8 @@ class uscore:
         #out=getattr(x,other)
         #if type(out) is type(any):
         return op(lambda x,y,other=other:getattr(y,other)(x))
+    def __call__(self,f1,f2,f3):
+        return op(lambda x,y,f1=f1,f2=f2,f3=f3: f2(f1(x,y),f3(x,y)))
 
 _=uscore()
 
@@ -284,10 +287,14 @@ def _unless_(x,y):
 # pure python
 # [k for k in range(100) if not (k in [i*j for i in range(k) for j in range(k)])]
 # pure point-free
-# N >>(Ξ >>_unless_<< (ε<< (_*_)@τ@φ <<Ξ )@φ@µ <<Ξ )@µ
+# N >>µ(Ξ >>_unless_<< φ(ε<<τ(_*_)@φ<<Ξ)@µ<<Ξ)
+# [i for i in range(N) if not i in table(_*_)@fork<<range(i)]
 # Fibonacci
-# Fib=(_[-1] + _[-2])@α
+# Fib=α(_[-1] + _[-2])
 # [1,1] >> Fib@N
+# [1,1] >> α(_[-1]+_[-2])@N
 # compute pi
-# 1000000 >> ((χ>>op("(x**2+y**2)**0.5<1")@rlµ<<χ)@ψ >>  Σ*4 >> _/_)@ψ
-# 1000000 >> ((χ>>(_**2>>_+_<<_**2>>_**0.5>>(_<1))@rlµ<<χ)@ψ >> Σ*4 >> _/_)@ψ
+# 1000000 >> ψ( ψ(χ>>op("(x**2+y**2)**0.5<1")@rlµ<<χ)>>Σ*4>> _/_)
+# 1000000 >> ψ(ψ(χ>>rlµ(_**2>>_+_<<_**2>>_**0.5>>(_<1))<<χ) >> Σ*4 >> _/_)
+# N=100000; sum([sqrt(random()**2+random()**2) < 1 for i in range(N)])/N*4
+# N >> range_ >> fn("(random()**2+random()**2)**0.5 < 1")@µ >> sum_/N*4)
