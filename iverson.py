@@ -5,6 +5,10 @@
 class fn:
     __array_priority__=2
     def __init__(self, function):
+        """
+        sqr=fn("x**2")
+        sqrt=fn(lambda x:x**0.5)
+        """
         if type(function)==str:
             self.function=eval("lambda x:"+function)
         else:
@@ -12,8 +16,18 @@ class fn:
     def __ror__(self, other):
         print("ror")
     def __or__(self, other):
+        """
+        syntactic sugar for adverbs:
+        avg = sum_ >>_+_<< len_ | fork
+        """
         return other.function(self)
     def __matmul__(self, other):
+        """
+        function decorators:
+        sqr@flatmap  # map sqr to list
+        sqr@4        # apply sqr 4 times
+        sqr@fn("x>4")@fork@flatmap # apply sqr only to values gt 4 
+        """
         #print("matmul",other)
         if type(other)==ad:
             return other.function(self)
@@ -33,6 +47,10 @@ class fn:
                     return x
             return if_helper
     def __rrshift__(self, other):
+        """
+        f >> g      # g(f(x))
+        f >> (_+_)  # f(x)+y
+        """
         #print("fn other>>self")
         if type(other)==fn:
             return fn(lambda x,self=self,other=other: self.function(other.function(x)))
@@ -41,6 +59,11 @@ class fn:
         else:
             return self(other)
     def __rshift__(self,other):
+        """
+        f >> g      # g(f(x))
+        f >> (_+_)  # f(x)+y
+        x >> f      # f(x)
+        """        
         if type(other)==fn:
             return fn(lambda x,self=self,other=other: other.function(self.function(x)))
         elif type(other)==op:
@@ -48,16 +71,25 @@ class fn:
         else:
             return self(other)
     def __lshift__(self, other):
+        """
+        f << g      # f(g(x))
+        f << x      # f(x)
+        """
         #print("fn self<<other")
         if type(other)==fn:
             return fn(lambda x,self=self,other=other: self.function(other.function(x)))
         else:
             return self(other)
     def __call__(self, value):
+        """
+        call fn object like a function
+        """
         #print(value)
         return self.function(value)
     def __add__(self,other):
-        "f+g (x) = f(x)+g(x)"
+        """
+        f+g (x) = f(x)+g(x)
+        """
         if type(other)==fn:
             return fn(lambda x:self(x)+other(x))
         else:
@@ -86,6 +118,10 @@ class fn:
 class op:
     __array_priority__=2    
     def __init__(self, function):
+        """
+        op("x+y")
+        op(lambda x,y:x+y)
+        """
         #print(function)
         if type(function)==str:
             #print("string")
@@ -95,24 +131,43 @@ class op:
     def __ror__(self, other):
         print("ror")
     def __or__(self, other):
+        """
+        """
         #print("self|ad")
         return other.function(self)
     def __matmul__(self, other):
+        """
+        apply adverb, eg:
+        op("x+y")@fork   # x+x
+        """
         #print("self@ad")
         return other.function(self)
     def __rrshift__(self, other):
+        """
+        f >> op("x+y")  # f(x)+y
+        1 >> op("x+y")  # fn("1+x")
+        """
         #print("op other>>self")
         if type(other)==fn:
             return op(lambda x,y,self=self,other=other:self.function(other.function(x),y))
         else:
             return fn(lambda x,self=self,other=other:self.function(other,x))
     def __lshift__(self, other):
+        """
+        op("x+y") << f  # x+f(y)
+        op("x+y") << 2  # fn("x+2")
+        """
         #print("op self<<other")
         if type(other)==fn:
             return op(lambda x,y,self=self,other=other:self.function(x,other.function(y)))
         else:
             return fn(lambda x,self=self,other=other:self.function(x,other))
     def __call__(self, value1, value2=None):
+        """
+        curry operator:
+        (_+_)(2) == (2+_)
+        (_+_)(2,3) == 2+3
+        """
         #print(" op(x,y) and op(x)")
         if value2==None:
             return fn(lambda x,self=self: self.function(value1,x))
@@ -121,8 +176,12 @@ class op:
 class ad:
     __array_priority__=2    
     def __init__(self, function):
+        """
+        """
         self.function = function
     def __call__(self,verb):
+        """
+        """
         return self.function(verb)
 
 # underscore definition
@@ -130,49 +189,94 @@ import operator
 class uscore:
     __array_priority__=2
     def __init__(self):
+        """
+        _=uscore()
+        """        
         pass
     def __add__(self,other):
+        """
+        (_+_) == op("x+y")
+        (_+2) == op("x+2")        
+        """
         if type(other)==uscore:
             return op(operator.__add__)
         else:
             return fn(lambda x,other=other:operator.__add__(x,other))
     def __radd__(self,other):
+        """
+        (2+_) == op("2+y")
+        """
         return fn(lambda x,other=other:operator.__add__(other,x))
     def __sub__(self,other):
         if type(other)==uscore:
             return op(operator.__sub__)
         else:
             return fn(lambda x,other=other:operator.__sub__(x,other))
+    def __rsub__(self,other):
+        """
+        (2-_) == op("2-y")
+        """
+        return fn(lambda x,other=other:operator.__sub__(other,x))
     def __mul__(self,other):
         if type(other)==uscore:
             return op(operator.__mul__)
         else:
             return fn(lambda x,other=other:operator.__mul__(x,other))
+    def __rmul__(self,other):
+        """
+        (2*_) == op("2*y")
+        """
+        return fn(lambda x,other=other:operator.__mul__(other,x))
     def __truediv__(self,other):
         if type(other)==uscore:
             return op(operator.__truediv__)
         else:
             return fn(lambda x,other=other:operator.__truediv__(x,other))
+    def __rtruediv__(self,other):
+        """
+        (2/_) == op("2/y")
+        """
+        return fn(lambda x,other=other:operator.__truediv__(other,x))
     def __pow__(self,other):
         if type(other)==uscore:
             return op(operator.__pow__)
         else:
             return fn(lambda x,other=other:operator.__pow__(x,other))
+    def __rpow__(self,other):
+        """
+        (2**_) == op("2**y")
+        """
+        return fn(lambda x,other=other:operator.__pow__(other,x))
     def __gt__(self,other):
         if type(other)==uscore:
             return op(operator.__gt__)
         else:
             return fn(lambda x,other=other:operator.__gt__(x,other))
+    def __rgt__(self,other):
+        """
+        (2>_) == op("2>y")
+        """
+        return fn(lambda x,other=other:operator.__gt__(other,x))
     def __lt__(self,other):
         if type(other)==uscore:
             return op(operator.__lt__)
         else:
             return fn(lambda x,other=other:operator.__lt__(x,other))
+    def __rlt__(self,other):
+        """
+        (2<_) == op("2<y")
+        """
+        return fn(lambda x,other=other:operator.__lt__(other,x))
     def __eq__(self,other):
         if type(other)==uscore:
             return op(operator.__eq__)
         else:
             return fn(lambda x,other=other:operator.__eq__(x,other))
+    def __req__(self,other):
+        """
+        (2=_) == op("2=y")
+        """
+        return fn(lambda x,other=other:operator.__eq__(other,x))
     def __in__(self,other):
         "fixme"
         if type(other)==uscore:
@@ -180,16 +284,25 @@ class uscore:
         else:
             return fn(lambda x,other=other:operator.__in__(x,other))
     def __getitem__(self,other):
+        """
+        (_[-1])(x) == x[-1]
+        """
         if type(other)==uscore:
             return op(operator.__getitem__)
         else:
             return fn(lambda x,other=other:operator.__getitem__(x,other))
     def __getattr__(self,other):
-        #out=getattr(x,other)
-        #if type(out) is type(any):
-        return op(lambda x,y,other=other:getattr(y,other)(x))
+        """
+        "asasasaadada" >> _.split << "a"
+        """
+        return op(lambda x,y,other=other:getattr(x,other)(y))
     def __call__(self,f1,f2,f3):
-        return op(lambda x,y,f1=f1,f2=f2,f3=f3: f2(f1(x,y),f3(x,y)))
+        """
+        fork J style
+        _(_+_, _/_, _-_) == op("(x+y)/(x-y)")
+        """
+        if type(f1)==op and type(f2)==op and type(f2)==op:
+            return op(lambda x,y,f1=f1,f2=f2,f3=f3: f2(f1(x,y),f3(x,y)))
 
 _=uscore()
 
