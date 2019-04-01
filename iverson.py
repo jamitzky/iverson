@@ -195,8 +195,8 @@ _=uscore()
 
 
 # adverbs definition
-ψ=φ=fork=ad(lambda f: fn(lambda x,f=f:f.function(x,x)))
-µ=flatmap=ad(lambda f: fn(lambda x,f=f: [f.function(i) for i in x]))
+fork=ad(lambda f: fn(lambda x,f=f:f.function(x,x)))
+flatmap=ad(lambda f: fn(lambda x,f=f: [f.function(i) for i in x]))
 deepmap=ad(lambda f:f)
 
 @ad
@@ -209,11 +209,11 @@ def ins(f):
             s0=f(s0,xx)
         return s0
     return insert_helper
-ω=insert=ins
-rµ=rmap=ad(lambda f: op(lambda x,y,f=f: [f.function(x,i) for i in y]))
-lµ=lmap=ad(lambda f: op(lambda x,y,f=f: [f.function(i,y) for i in x]))
-rlµ=rlmap=ad(lambda f: op(lambda x,y,f=f: [f.function(x[i],y[i]) for i in range(len(x))])) # elementwise
-τ=table=ad(lambda f: op(lambda x,y,f=f: [f.function(i,j) for i in x for j in y]))
+
+rmap=ad(lambda f: op(lambda x,y,f=f: [f.function(x,i) for i in y]))
+lmap=ad(lambda f: op(lambda x,y,f=f: [f.function(i,y) for i in x]))
+rlmap=ad(lambda f: op(lambda x,y,f=f: [f.function(x[i],y[i]) for i in range(len(x))])) # elementwise
+table=ad(lambda f: op(lambda x,y,f=f: [f.function(i,j) for i in x for j in y]))
 rev=ad(lambda f: op(lambda x,y,f=f:f.function(y,x)))
 
 @ad
@@ -246,16 +246,16 @@ append_=op("y+[x]")
 
 
 # standard operators        
-ε=_in_=op("x in y")
+_in_=op("x in y")
 
 
 # standard functions
 import random
-χ=runif_=fn(lambda n:[random.random() for nn in range(n)])
-Σ=sum_=fn(sum)
-Λ=len_=fn(len)
+runif_=fn(lambda n:[random.random() for nn in range(n)])
+sum_=fn(sum)
+len_=fn(len)
 p = Print = fn(print)
-Ξ=range_=fn(range)
+range_=fn(range)
 _range_=op("range(x,y)")
 int_=fn(int)
 import math
@@ -285,14 +285,27 @@ def _if_(x,y):
 def _unless_(x,y):
     return [x[i] for i in range(len(x)) if not y[i]]
 
+# greek shortcuts
+ψ=φ=fork
+µ=flatmap
+ω=insert=ins
+rµ=rmap
+lµ=lmap
+rlµ=rlmap
+τ=table
+ε=_in_
+χ=runif_
+Σ=sum_
+Λ=len_
+Ξ=range_
 
 # compute all primes smaller than N
-# [i for i in Ξ(N) if not i>>(ε<<(_*_)@τ@φ<<Ξ)@φ]
-# [i for i in N>>Ξ if not i in i>>((_*_)@τ@φ<<Ξ|φ)]
+# [i for i in Ξ(N) if not i>> ψ(ε<<τ(_*_)@ψ<<Ξ)]
+# [i for i in N>>Ξ if not i in i>>Ξ>>τ(_*_)@ψ ]
 # pure python
 # [k for k in range(100) if not (k in [i*j for i in range(k) for j in range(k)])]
 # pure point-free
-# N >>µ(Ξ >>_unless_<< φ(ε<<τ(_*_)@φ<<Ξ)@µ<<Ξ)
+# N >>ψ(Ξ >>_unless_<< ψ( ε<< τ(_*_)@ψ <<Ξ )@µ<<Ξ)
 # [i for i in range(N) if not i in table(_*_)@fork<<range(i)]
 # Fibonacci
 # Fib=α(_[-1] + _[-2])
