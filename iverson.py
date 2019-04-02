@@ -14,13 +14,43 @@ class fn:
         else:
             self.function = function
     def __ror__(self, other):
-        print("ror")
+        """
+        syntactic sugar for adverbs:
+        avg = sum_ >>_+_<< len_ | fork
+        """
+        print("fn __ror__"+repr(type(self))+repr(type(other)))
+        if type(other)==fn:
+            return fn(lambda x,self=self,other=other: self.function(other.function(x)))
+        elif type(other)==op:
+            return op(lambda x,y,self=self,other=other: self.function(other.function(x,y)))
+        else:
+            return self(other)
+
     def __or__(self, other):
         """
         syntactic sugar for adverbs:
         avg = sum_ >>_+_<< len_ | fork
         """
-        return other.function(self)
+        print("fn __or__"+repr(type(self))+repr(type(other)))
+        if type(other)==fn:
+            return fn(lambda x,self=self,other=other: self.function(other.function(x)))
+        elif type(other)==op:
+            return op(lambda x,y,self=self,other=other: self.function(other.function(x,y)))
+        else:
+            return self(other)
+    def __xor__(self, other):
+        """
+        syntactic sugar for adverbs:
+        f ^ g
+        """
+        print("fn __xor__"+repr(type(self))+repr(type(other)))
+        if type(other)==fn:
+            return fn(lambda x,self=self,other=other: self.function(other.function(x)))
+        elif type(other)==op:
+            return op(lambda x,y,self=self,other=other: self.function(other.function(x,y)))
+        else:
+            return self(other)
+
     def __matmul__(self, other):
         """
         function decorators:
@@ -130,6 +160,10 @@ class op:
             self.function = function
     def __ror__(self, other):
         print("ror")
+        if type(other)==fn:
+            return op(lambda x,y,self=self,other=other:self.function(other.function(x),y))
+        else:
+            return fn(lambda x,self=self,other=other:self.function(other,x))
     def __or__(self, other):
         """
         """
@@ -156,6 +190,16 @@ class op:
         """
         op("x+y") << f  # x+f(y)
         op("x+y") << 2  # fn("x+2")
+        """
+        #print("op self<<other")
+        if type(other)==fn:
+            return op(lambda x,y,self=self,other=other:self.function(x,other.function(y)))
+        else:
+            return fn(lambda x,self=self,other=other:self.function(x,other))
+    def __xor__(self, other):
+        """
+        op("x+y") ^ f  # x+f(y)
+        op("x+y") ^ 2  # fn("x+2")
         """
         #print("op self<<other")
         if type(other)==fn:
@@ -399,9 +443,9 @@ def _unless_(x,y):
     return [x[i] for i in range(len(x)) if not y[i]]
 
 # greek shortcuts
-ψ=φ=fork
+ψ=fork
 µ=flatmap
-ω=insert=ins
+φ=insert=ins
 rµ=rmap
 lµ=lmap
 rlµ=rlmap
@@ -429,3 +473,6 @@ rlµ=rlmap
 # 1000000 >> ψ(ψ(χ>>rlµ(_**2>>_+_<<_**2>>_**0.5>>(_<1))<<χ) >> Σ*4 >> _/_)
 # N=100000; sum([sqrt(random()**2+random()**2) < 1 for i in range(N)])/N*4
 # N >> range_ >> fn("(random()**2+random()**2)**0.5 < 1")@µ >> sum_/N*4)
+
+# apyl
+#  10 >> R >> (ε^ψ(α*ω|τ)^R|ψ)@µ
