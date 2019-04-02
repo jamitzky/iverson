@@ -13,43 +13,46 @@ class fn:
             self.function=eval("lambda x:"+function)
         else:
             self.function = function
-    def __ror__(self, other):
-        """
-        syntactic sugar for adverbs:
-        avg = sum_ >>_+_<< len_ | fork
-        """
-        print("fn __ror__"+repr(type(self))+repr(type(other)))
-        if type(other)==fn:
-            return fn(lambda x,self=self,other=other: self.function(other.function(x)))
-        elif type(other)==op:
-            return op(lambda x,y,self=self,other=other: self.function(other.function(x,y)))
-        else:
-            return self(other)
 
     def __or__(self, other):
         """
-        syntactic sugar for adverbs:
-        avg = sum_ >>_+_<< len_ | fork
+        syntactic sugar:
+        f | g == f >> g
+        f | op == f >> op
+        f | x == f(x)
         """
-        print("fn __or__"+repr(type(self))+repr(type(other)))
+        #print("fn __or__"+repr(type(self))+repr(type(other)))
         if type(other)==fn:
-            return fn(lambda x,self=self,other=other: self.function(other.function(x)))
+            return self >> other
         elif type(other)==op:
-            return op(lambda x,y,self=self,other=other: self.function(other.function(x,y)))
+            return self >> other
         else:
             return self(other)
+    def __ror__(self, other):
+        """
+        x | f == f(x)
+        """
+        return self.__or__(other)
+
     def __xor__(self, other):
         """
-        syntactic sugar for adverbs:
-        f ^ g
+        syntactic sugar:
+        f ^ g == f << g
+        f ^ op == f << op
+        f ^ x == f(x)
         """
-        print("fn __xor__"+repr(type(self))+repr(type(other)))
+        #print("fn __xor__"+repr(type(self))+repr(type(other)))
         if type(other)==fn:
-            return fn(lambda x,self=self,other=other: self.function(other.function(x)))
+            return self << other
         elif type(other)==op:
-            return op(lambda x,y,self=self,other=other: self.function(other.function(x,y)))
+            return self << other
         else:
             return self(other)
+    def __rxor__(self, other):
+        """
+        x ^ f == f(x)
+        """
+        return self.__xor__(other)
 
     def __matmul__(self, other):
         """
@@ -76,18 +79,6 @@ class fn:
                 else:
                     return x
             return if_helper
-    def __rrshift__(self, other):
-        """
-        f >> g      # g(f(x))
-        f >> (_+_)  # f(x)+y
-        """
-        #print("fn other>>self")
-        if type(other)==fn:
-            return fn(lambda x,self=self,other=other: self.function(other.function(x)))
-        elif type(other)==op:
-            return op(lambda x,y,self=self,other=other: self.function(other.function(x,y)))
-        else:
-            return self(other)
     def __rshift__(self,other):
         """
         f >> g      # g(f(x))
@@ -100,6 +91,11 @@ class fn:
             return op(lambda x,y,self=self,other=other: other.function(self.function(x),y))
         else:
             return self(other)
+    def __rrshift__(self, other):
+        """
+        x >> f
+        """
+        return self.__rshift__(other)
     def __lshift__(self, other):
         """
         f << g      # f(g(x))
@@ -159,13 +155,14 @@ class op:
         else:
             self.function = function
     def __ror__(self, other):
+        """
+        other | op  == fn(op(other,y))
+        """
         print("ror")
-        if type(other)==fn:
-            return op(lambda x,y,self=self,other=other:self.function(other.function(x),y))
-        else:
-            return fn(lambda x,self=self,other=other:self.function(other,x))
+        return fn(lambda x,self=self,other=other:self.function(other,x))
     def __or__(self, other):
         """
+        op | ad == ad(op)
         """
         #print("self|ad")
         return other.function(self)
@@ -182,10 +179,12 @@ class op:
         1 >> op("x+y")  # fn("1+x")
         """
         #print("op other>>self")
-        if type(other)==fn:
-            return op(lambda x,y,self=self,other=other:self.function(other.function(x),y))
-        else:
-            return fn(lambda x,self=self,other=other:self.function(other,x))
+        return fn(lambda x,self=self,other=other:self.function(other,x))
+    def __rshift__(self,other):
+        """
+        (_+_) >> f   == f(x+y)
+         """
+        return op(lambda x,y,self=self,other=other: other.function(self.function(x,y)))
     def __lshift__(self, other):
         """
         op("x+y") << f  # x+f(y)
@@ -451,10 +450,12 @@ lµ=lmap
 rlµ=rlmap
 τ=table
 ε=_in_
-χ=runif_
+
+U=runif_
+R=fn(list)^fn(range)
 Σ=sum_
+
 Λ=len_
-Ξ=range_
 α=_
 ω=_
 
@@ -478,4 +479,4 @@ rlµ=rlmap
 
 # apyl
 #  10 >> R >> (ε^ψ(α*ω|τ)^R|ψ)@µ
-#
+primes = ψ(_unless_ << µ(ε^(α*ω|τ|ψ)^R|ψ))^R
