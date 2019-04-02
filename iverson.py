@@ -399,7 +399,7 @@ def converge(f):
     return converge_helper
 
 append_=op("y+[x]")
-α=append=ad(lambda f:f >> append_|fork)
+append=ad(lambda f:f >> append_|fork)
 
 
 # standard operators        
@@ -455,6 +455,8 @@ rlµ=rlmap
 Σ=sum_
 Λ=len_
 Ξ=range_
+α=_
+ω=_
 
 # compute all primes smaller than N
 # [i for i in Ξ(N) if not i>> ψ(ε<<τ(_*_)@ψ<<Ξ)]
