@@ -57,9 +57,9 @@ class fn:
     def __matmul__(self, other):
         """
         function decorators:
-        sqr@flatmap  # map sqr to list
-        sqr@4        # apply sqr 4 times
-        sqr@fn("x>4")@fork@flatmap # apply sqr only to values gt 4 
+        f@flatmap  == flatmap(f)            # map sqr to list
+        f@4  == f(f(f(f(x))))        # apply f 4 times
+        f@g  == f(g(x)) 
         """
         #print("matmul",other)
         if type(other)==ad:
@@ -72,13 +72,9 @@ class fn:
             else:
                 return self << self@(other-1)
         elif type(other)==fn:
-            @op
-            def if_helper(x,y):
-                if other.function(y):
-                    return self.function(x)
-                else:
-                    return x
-            return if_helper
+            return self << other
+        else:
+            return self << fn(other)
     def __rshift__(self,other):
         """
         f >> g      # g(f(x))
@@ -213,7 +209,7 @@ class op:
         """
         #print(" op(x,y) and op(x)")
         if value2==None:
-            return fn(lambda x,self=self: self.function(value1,x))
+            return fn(lambda x,self=self: self.function(x,value1))
         else:
             return self.function(value1, value2)
 class ad:
@@ -225,7 +221,13 @@ class ad:
     def __call__(self,verb):
         """
         """
-        return self.function(verb)
+        if type(verb)==fn:
+            return self.function(verb)
+        elif type(verb)==op:
+            return self.function(verb)
+        else:
+            return self.function(fn(verb))
+            
 
 # underscore definition
 import operator
@@ -236,6 +238,8 @@ class uscore:
         _=uscore()
         """        
         pass
+    def __matmul__(self,other):
+        return fn(other)
     def __add__(self,other):
         """
         (_+_) == op("x+y")
