@@ -204,7 +204,7 @@ class op:
     def __call__(self, value1, value2=None):
         """
         curry operator:
-        (_+_)(2) == (2+_)
+        (_+_)(2)(3) == (_+2)(3)=3+2
         (_+_)(2,3) == 2+3
         """
         #print(" op(x,y) and op(x)")
