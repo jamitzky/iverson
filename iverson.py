@@ -136,6 +136,16 @@ class fn:
             return fn(lambda x:self(x)**other(x))
         else:
             return fn(lambda x:self(x)**other)
+    def __gt__(self,other):
+        if type(other)==fn:
+            return fn(lambda x:self(x)>other(x))
+        else:
+            return fn(lambda x:self(x)>other)
+    def __lt__(self,other):
+        if type(other)==fn:
+            return fn(lambda x:self(x)<other(x))
+        else:
+            return fn(lambda x:self(x)<other)
 
 class op:
     __array_priority__=2    
@@ -212,6 +222,58 @@ class op:
             return fn(lambda x,self=self: self.function(x,value1))
         else:
             return self.function(value1, value2)
+        
+    def __add__(self,other):
+        "op1 + op2 == op1(x,y)+op2(x,y)"
+        if type(other)==op:
+            return op(lambda x,y,self=self,other=other:self(x,y)+other(x,y))
+        else:
+            return op(lambda x,y,self=self,other=other:self(x,y)+other)
+
+    def __sub__(self,other):
+        "op1 - op2 == op1(x,y)-op2(x,y)"
+        if type(other)==op:
+            return op(lambda x,y,self=self,other=other:self(x,y)-other(x,y))
+        else:
+            return op(lambda x,y,self=self,other=other:self(x,y)-other)
+
+    def __mul__(self,other):
+        "op1 * op2 == op1(x,y)*op2(x,y)"
+        if type(other)==op:
+            return op(lambda x,y,self=self,other=other:self(x,y)*other(x,y))
+        else:
+            return op(lambda x,y,self=self,other=other:self(x,y)*other)
+
+    def __truediv__(self,other):
+        "op1 / op2 == op1(x,y)/op2(x,y)"
+        if type(other)==op:
+            return op(lambda x,y,self=self,other=other:self(x,y)/other(x,y))
+        else:
+            return op(lambda x,y,self=self,other=other:self(x,y)/other)
+
+    def __pow__(self,other):
+        "op1 ** op2 == op1(x,y)**op2(x,y)"
+        if type(other)==op:
+            return op(lambda x,y,self=self,other=other:self(x,y)**other(x,y))
+        else:
+            return op(lambda x,y,self=self,other=other:self(x,y)**other)
+
+    def __gt__(self,other):
+        "op1 > op2 == op1(x,y)>op2(x,y)"
+        if type(other)==op:
+            return op(lambda x,y,self=self,other=other:self(x,y)>other(x,y))
+        else:
+            return op(lambda x,y,self=self,other=other:self(x,y)>other)
+
+    def __lt__(self,other):
+        "op1 < op2 == op1(x,y)<op2(x,y)"
+        if type(other)==op:
+            return op(lambda x,y,self=self,other=other:self(x,y)<other(x,y))
+        else:
+            return op(lambda x,y,self=self,other=other:self(x,y)<other)
+
+
+        
 class ad:
     __array_priority__=2    
     def __init__(self, function):
