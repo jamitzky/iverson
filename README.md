@@ -22,33 +22,33 @@ The data flow operators show their full potential when they are combined with dy
 
 where the fork adverb is defined by `(F@fork)(x)==F(x,x)`
 
-|code|meaning|
-|--|--|
-|`x >> f`|`f(x)`|
-|`f << x`|`f(x)`|
-|`f >> g`|`g(f(x))`|
-|`f@g`|`f(g(x))`|
-|`f << g`|`f(g(x))`|
-|`f(g)`|`f(g(x))`|
-|`f >> op << g`|`op(f(x),g(y))`|
-|`f + g`|`f(x)+g(x)`|
-|`f >> op`|`op(f(x),y)`|
-|`f(op)`|`f(op(x,y))`|
-|`op >> f`|`f(op(x,y))`|
-|`op << f`|`op(x,f(y))`|
-|`op@ad`|`ad(op)`|
-|`f@ad`|`ad(f)`|
-|`f@N`|`f(f(f...(f(x))))`|
-|`N>>op`|`op(N,x)`|
-|`op<<N`|`op(x,N)`|
-|`op(N)`|`op(x,N)`|
-|`op1+op2`|`op1(x,y)+op2(x,y)`|
-|`_@lambda`|`fn(lambda)`|
-|`_+_`|`x+y`|
-|`_+N`|`x+N`|
-|`_[i]`|`x[i]`|
-|`_.func`|`x.func(y)`|
-|`_(op1, op2, op3)`|`op2(op1(x,y),op3(x,y)`|
+|code|meaning|example|
+|--|--|--|
+|`x >> f`|`f(x)`|`x >> sin_`|
+|`f << x`|`f(x)`|`sin_ << x`|
+|`f >> g`|`g(f(x))`|`sin_ >> cos_`|
+|`f@g`|`f(g(x))`|`sin_@cos_`|
+|`f << g`|`f(g(x))`|`sin_ << cos__`|
+|`f(g)`|`f(g(x))`|`sin_(cos_)`|
+|`f >> op << g`|`op(f(x),g(y))`|` sin_ >>_+_<< cos_`|
+|`f + g`|`f(x)+g(x)`|`sin_ + cos_`|
+|`f >> op`|`op(f(x),y)`|`sin_ >> _+_`|
+|`f(op)`|`f(op(x,y))`|`sin_(_+_)`|
+|`op >> f`|`f(op(x,y))`|`_+_ >> sin_`|
+|`op << f`|`op(x,f(y))`|`_+_ << sin_`|
+|`op@ad`|`ad(op)`|`(_+_)@fork`|
+|`f@ad`|`ad(f)`|`sin_@flatmap`|
+|`f@N`|`f(f(f...(f(x))))`|`sin_@4`|
+|`N>>op`|`op(N,x)`|`2>>_+_`|
+|`op<<N`|`op(x,N)`|`_+_<<4`|
+|`op(N)`|`op(x,N)`|`(_+_)(3)`|
+|`op1+op2`|`op1(x,y)+op2(x,y)`|`(_+_)/(_-_)`|
+|`_@lambda`|`fn(lambda)`|`_@math.sin`|
+|`_+_`|`x+y`|`_*_`|
+|`_+N`|`x+N`|`_*2`|
+|`_[i]`|`x[i]`|`_[-1]`|
+|`_.func`|`x.func(y)`|`_.split("")`|
+|`_(op1, op2, op3)`|`op2(op1(x,y),op3(x,y)`|`_((_+_),(_/_),(_-_))`|
 
 # We don't need no stinkin for loops
 
