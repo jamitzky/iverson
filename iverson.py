@@ -560,3 +560,6 @@ R=fn(list)^fn(range)
 # apyl
 #  10 >> R >> (ε^ψ(α*ω|τ)^R|ψ)@µ
 primes = ψ(_unless_ << µ(ε^(α*ω|τ|ψ)^R|ψ))^R
+primes = ψ(_unless_ << µ(ε << (α*ω|τ|ψ)@R|ψ) )@R
+primes = ψ(_unless_ << ψ(ε << τ(α*ω)@ψ@R)@µ)@R
+primes = (_unless_ << (ε << (α*ω)@τ@ψ@R)@ψ@µ)@ψ@R
