@@ -478,6 +478,9 @@ rec=lambda : _sto[-1]
 
 # standard operators        
 _in_=op("x in y")
+to=op(lambda x,y:range(x,y))
+# 1>>to(10)
+tr=tee(_@print)
 
 
 # standard functions
@@ -536,8 +539,8 @@ R=fn(list)^fn(range)
 Σ=sum_
 
 Λ=len_
-α=_
-ω=_
+α=X
+ω=Y
 
 # compute all primes smaller than N
 # [i for i in Ξ(N) if not i>> ψ(ε<<τ(_*_)@ψ<<Ξ)]
@@ -548,9 +551,9 @@ R=fn(list)^fn(range)
 # N >>ψ(Ξ >>_unless_<< ψ( ε<< τ(_*_)@ψ <<Ξ )@µ<<Ξ)
 # [i for i in range(N) if not i in table(_*_)@fork<<range(i)]
 # Fibonacci
-# Fib=α(_[-1] + _[-2])
+# Fib=append(_[-1] + _[-2])
 # [1,1] >> Fib@N
-# [1,1] >> α(_[-1]+_[-2])@N
+# [1,1] >> append(_[-1]+_[-2])@N
 # compute pi
 # 1000000 >> ψ( ψ(χ>>op("(x**2+y**2)**0.5<1")@rlµ<<χ)>>Σ*4>> _/_)
 # 1000000 >> ψ(ψ(χ>>rlµ(_**2>>_+_<<_**2>>_**0.5>>(_<1))<<χ) >> Σ*4 >> _/_)
@@ -559,7 +562,9 @@ R=fn(list)^fn(range)
 
 # apyl
 #  10 >> R >> (ε^ψ(α*ω|τ)^R|ψ)@µ
-primes = ψ(_unless_ << µ(ε^(α*ω|τ|ψ)^R|ψ))^R
-primes = ψ(_unless_ << µ(ε << (α*ω|τ|ψ)@R|ψ) )@R
-primes = ψ(_unless_ << ψ(ε << τ(α*ω)@ψ@R)@µ)@R
-primes = (_unless_ << (ε << (α*ω)@τ@ψ@R)@ψ@µ)@ψ@R
+#primes = ψ(_unless_ << µ(ε^(α*ω|τ|ψ)^R|ψ))^R
+#primes = ψ(_unless_ << µ(ε << (α*ω|τ|ψ)@R|ψ) )@R
+#primes = ψ(_unless_ << ψ(ε << τ(α*ω)@ψ@R)@µ)@R
+#primes = (_unless_ << (ε << (α*ω)@τ@ψ@R)@ψ@µ)@ψ@R
+primes = R >> fork(_unless_ << fork(ε << table(X*Y)@fork@R)@µ)
+#1>>to(10) >> lmap(X/(_@max)(Y))@fork
