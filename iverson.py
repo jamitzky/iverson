@@ -98,16 +98,18 @@ class fn:
         f << x      # f(x)
         """
         #print("fn self<<other")
-        if type(other)==fn:
-            return fn(lambda x,self=self,other=other: self.function(other.function(x)))
-        else:
-            return self(other)
-    def __call__(self, value):
+        return self(other)
+    def __call__(self, other):
         """
         call fn object like a function
+        f(g)(x) =f(g(x))
         """
-        #print(value)
-        return self.function(value)
+        if type(other)==fn:
+            return fn(lambda x,self=self,other=other: self.function(other.function(x)))
+        elif type(other)==op:
+            return op(lambda x,y,self=self,other=other: self.function(other.function(x,y)))
+        else:
+            return self.function(other)
     def __add__(self,other):
         """
         f+g (x) = f(x)+g(x)
@@ -466,6 +468,13 @@ def converge(f):
 append_=op("y+[x]")
 append=ad(lambda f:f >> append_|fork)
 
+tee=ad(lambda f:fn(lambda x:[x,f(x)])>>_[0])
+_sto=[]
+@fn
+def sto(x):
+    _sto.append(x)
+rec=lambda : _sto[-1]
+#N=1000; N >> tee(sto) >> R >> µ(_/rec()) >>sin_(X)*cos_(Y)@table@fork >> sum_/rec()**2
 
 # standard operators        
 _in_=op("x in y")
@@ -485,6 +494,7 @@ log_=fn(math.log)
 sin_=fn(math.sin)
 cos_=fn(math.cos)
 exp_=fn(math.exp)
+sqrt_=fn(math.sqrt)
 sorted_=fn(sorted)
 
 
@@ -506,6 +516,10 @@ def _if_(x,y):
 @op
 def _unless_(x,y):
     return [x[i] for i in range(len(x)) if not y[i]]
+
+# variables
+X=op(lambda x,y:x)
+Y=op(lambda x,y:y)
 
 # greek shortcuts
 ψ=fork
