@@ -18,7 +18,7 @@ Six overloaded operators which operate on the above classes:
 
 The data flow operators show their full potential when they are combined with dyadic functions. e.g. `Div(x,y)==x/y` and the fork adverb
 
-`avg = (_@sum / _@len)@fork`
+`avg = (_@sum) / (_@len)`
 
 where the fork adverb is defined by `(F@fork)(x)==F(x,x)`
 
