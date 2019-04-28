@@ -485,7 +485,7 @@ def _unless_(x,y):
 X=op(lambda x,y:x)
 Y=op(lambda x,y:y)
 
-# greek shortcuts
+# greek shortcuts α, β, γ, δ, ε, η, θ, ζ, ι, κ, λ, μ, ν, ξ, π, ρ, σ, τ, υ, φ, χ, ψ, ω
 ψ=fork
 µ=flatmap
 γ=insert=ins
@@ -507,9 +507,10 @@ R=fn(lambda x: list(range(x)))
 # pure python
 # [k for k in range(100) if not (k in [i*j for i in range(k) for j in range(k)])]
 # pure point-free
-primes= (R >> _unless_ <<  (_in_ << (X*Y)@table@fork<<R)()@flatmap<<R)()
-primes=  (_unless_ <<  (_in_ << table(X*Y)()(R))()@flatmap)()(R)
-primes=  (_unless_ <<  (ε << τ(X*Y)()(R))()@µ)()(R)
+primes= (R >> _unless_ <<  (_in_ << (X*Y)@table@fork@R)@fork@flatmap@R)@fork
+primes=  (_unless_ << (_in_ << table(X*Y)()(R))()@flatmap)()(R)
+primes=  (_unless_ << (ε << τ(X*Y)()(R))()@µ)()(R)
+primes=  (_unless_ << (ε << τ(X*Y)()@R)()@µ)()@R
 10 >> primes >> pr
 
 # Fibonacci
