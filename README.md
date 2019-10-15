@@ -49,7 +49,7 @@ where the fork adverb is defined by `(F@fork)(x)==F(x,x)`
 |`_[i]`|`x[i]`|`_[-1]`|
 |`_.func`|`x.func(y)`|`_.split("")`|
 |`_(op1, op2, op3)`|`op2(op1(x,y),op3(x,y)`|`_((_+_),(_/_),(_-_))`|
-|`op1(op2,op3)`|`op1(op2(x,y),op3(x,y)`|`(_/_)(_+_,_-_)`|
+|`op1(op2,op3)`|`op1(op2(x,y),op3(x,y)`|`pow_(_+_,_-_)`|
 
 # We don't need no stinkin for loops
 
