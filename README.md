@@ -63,4 +63,8 @@ can now be written as:
 `arr >> do_something@flatmap`
 
 
+# Important J Idioms
 
+## Function concatination
+
+`f@g` denotes the concatination of two functions `f(g(x))`
