@@ -72,7 +72,9 @@ can now be written as:
  - predefined adverbs in iverson.py: `fork, flatmap, deepmap, ins, rmap, lmap, rlmap, table, rev, cum, converge, append, tee, rec`
  - predefined conjunctions in iverson.py: `f|g, f^g, f>>g, f<<g, f+g, f-g, f*g, f/g, f%g, f**g, f>g, f<g`
 
-these adverbs and conjunctions can be used to write tacit programs where no explicit variables are stated.
+these adverbs and conjunctions can be used to write tacit programs where no explicit variables are needed. 
 
+Furthermore the functions to which these operators are applied to do not have to be only functions of a single variable (aka monads) but can also be functions of 2 variables (aka dyads).
+For example the function to sum up an array of numbers can be defined by: `sum = (_+_)@ins` which means `insert` the function `(_+_)` into the array between the numbers and add all the elements.
 
-
+By using the function `one=fn(lambda x:1)` we can then define a length function for arrays by using the `flatmap` adverb by `length = sum@(one@flatmap)` and furthermore a function `mean = sum/length` which computes the sum and the length of an array and then divides the two values by each other giving the mean of the array.
