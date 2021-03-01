@@ -69,6 +69,10 @@ can now be written as:
 
 `f@g` denotes the concatination of two functions `f(g(x))` It can be used to generate a new function without writing out an argument. This is called tacit programming. New functions are composed from existing by operators. This is very similar in the programming language Haskell where tacit programming is also a very important tool to generate new functions. In order to accomplish this task in J there exist adverbs and conjunctions. Adverbs are functions with a function as one argument and returning a new function. Conjuctions take 2 functions as arguments and return a new function. They cannot be applied to numers but only on functions and are somehow function-functions or called functors. An example for a adverb is the `map` functor which takes as an argument a function of a scalar variable and is transformed into a function which applies this function to an array or list.
 
- - predefined adverbs in iverson.py: fork, flatmap, deepmap, ins, rmap, lmap, rlmap, table, rev, cum, converge, append, tee, rec
- - predefined conjunctions in iverson.py
+ - predefined adverbs in iverson.py: `fork, flatmap, deepmap, ins, rmap, lmap, rlmap, table, rev, cum, converge, append, tee, rec`
+ - predefined conjunctions in iverson.py: `f|g, f^g, f>>g, f<<g, f+g, f-g, f*g, f/g, f%g, f**g, f>g, f<g`
+
+these adverbs and conjunctions can be used to write tacit programs where no explicit variables are stated.
+
+
 
